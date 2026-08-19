@@ -1,0 +1,6 @@
+{
+  "name": "UniPast - University Past Questions & Academic Resource Portal",
+  "description": "Multi-tenant academic portal for Ghanaian traditional and technical university past exam questions, step-by-step verified solutions, AI hardcopy scanner, lecture materials, interactive exam practice, and role-based administration.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
