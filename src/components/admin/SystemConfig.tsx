@@ -32,6 +32,8 @@ import {
 import { University, Faculty, Department, Programme, Course, ACADEMIC_DISCIPLINES } from '../../types';
 import { cleanCourseTitle } from '../../utils/courseUtils';
 import { ThemeTemplateEditor } from './ThemeTemplateEditor';
+import { SectionContentEditor } from './SectionContentEditor';
+import { Sliders } from 'lucide-react';
 
 export const SystemConfig: React.FC = () => {
   const {
@@ -78,7 +80,7 @@ export const SystemConfig: React.FC = () => {
   const selectedUni = universities.find((u) => u.id === selectedUniId) || universities[0];
 
   // Active Tab
-  const [activeTab, setActiveTab] = useState<'hierarchy' | 'courses' | 'branding' | 'passcodes' | 'institutions' | 'themes'>('hierarchy');
+  const [activeTab, setActiveTab] = useState<'hierarchy' | 'courses' | 'branding' | 'passcodes' | 'institutions' | 'themes' | 'sections'>('hierarchy');
 
   // Search filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -542,6 +544,20 @@ export const SystemConfig: React.FC = () => {
           >
             <Palette className="w-4 h-4" />
             <span>Theme Templates & Customizer</span>
+          </button>
+        )}
+
+        {isSysAdmin && (
+          <button
+            onClick={() => setActiveTab('sections')}
+            className={`pb-3 text-xs font-bold flex items-center gap-2 border-b-2 transition ${
+              activeTab === 'sections'
+                ? 'border-indigo-600 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400'
+                : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+            }`}
+          >
+            <Sliders className="w-4 h-4" />
+            <span>UI Sections, Badges & Texts</span>
           </button>
         )}
       </div>
@@ -1235,6 +1251,13 @@ export const SystemConfig: React.FC = () => {
       {/* ======================================================== */}
       {activeTab === 'themes' && isSysAdmin && (
         <ThemeTemplateEditor />
+      )}
+
+      {/* ======================================================== */}
+      {/* TAB 7: SECTION & TEXT CUSTOMIZER (SYS ADMIN)             */}
+      {/* ======================================================== */}
+      {activeTab === 'sections' && isSysAdmin && (
+        <SectionContentEditor />
       )}
 
       {/* ======================================================== */}

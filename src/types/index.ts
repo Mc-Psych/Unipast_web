@@ -361,4 +361,111 @@ export interface ThemeTemplate {
   authorName?: string;
 }
 
+// =========================================================================
+// SYSTEM SECTION & TEXT CUSTOMIZATION CONFIGURATION
+// =========================================================================
+export interface SystemContentConfig {
+  // Navigation & Branding
+  brandName: string;
+  brandHighlight: string;
+  brandLogoChar: string;
+  showCloudBadge: boolean;
+  cloudBadgeText: string;
+  showBrandSubtitle: boolean;
+  brandSubtitle: string;
+
+  // Navbar Badges & Controls
+  showScopeBadge: boolean;
+  sysAdminScopeText: string;
+  schoolAdminScopeText: string;
+  showAiTutorNavButton: boolean;
+  aiTutorNavButtonText: string;
+  showUniversitySelector: boolean;
+  showBookmarksNavButton: boolean;
+
+  // Sidebar & Widgets
+  showSidebarScopeBadge: boolean;
+  sidebarScopeText: string;
+  showSidebarAiWidget: boolean;
+  sidebarAiWidgetTitle: string;
+  sidebarAiWidgetDesc: string;
+
+  // Welcome & Landing Page
+  showCurriculumBadge: boolean;
+  curriculumBadgeText: string;
+  welcomeHeroTitle: string;
+  welcomeHeroHighlight: string;
+  welcomeHeroDesc: string;
+
+  feature1Title: string;
+  feature1Desc: string;
+  feature2Title: string;
+  feature2Desc: string;
+  feature3Title: string;
+  feature3Desc: string;
+
+  ctaBannerTitle: string;
+  ctaBannerDesc: string;
+
+  // Dashboard Headings
+  studentDashboardTitle: string;
+  studentDashboardSubtitle: string;
+  sysAdminHubTitle: string;
+  sysAdminHubSubtitle: string;
+}
+
+export const DEFAULT_SYSTEM_CONTENT_CONFIG: SystemContentConfig = {
+  // Navigation & Branding
+  brandName: 'UniPast',
+  brandHighlight: 'Past',
+  brandLogoChar: 'U',
+  showCloudBadge: true,
+  cloudBadgeText: 'Ghana Cloud',
+  showBrandSubtitle: true,
+  brandSubtitle: 'All Traditional & Technical Universities Portal',
+
+  // Navbar Badges & Controls
+  showScopeBadge: true,
+  sysAdminScopeText: 'System Admin Scope',
+  schoolAdminScopeText: 'School Admin',
+  showAiTutorNavButton: true,
+  aiTutorNavButtonText: 'AI Tutor',
+  showUniversitySelector: true,
+  showBookmarksNavButton: true,
+
+  // Sidebar & Widgets
+  showSidebarScopeBadge: true,
+  sidebarScopeText: 'System Admin Scope',
+  showSidebarAiWidget: true,
+  sidebarAiWidgetTitle: 'AI Exam Tutor',
+  sidebarAiWidgetDesc: 'Instant step-by-step solutions and mathematical proofs.',
+
+  // Welcome & Landing Page
+  showCurriculumBadge: true,
+  curriculumBadgeText: 'Ghana Higher Education Past Exam & Solution Hub',
+  welcomeHeroTitle: 'Master Your Exams Across',
+  welcomeHeroHighlight: 'Every Ghanaian University',
+  welcomeHeroDesc:
+    'Seamless past questions, step-by-step marking rubrics, verified lecture notes, direct hardcopy camera scanning for digitizers, and institutional management.',
+
+  feature1Title: 'Student Focused Access',
+  feature1Desc:
+    'Filtered past questions, step-by-step mathematical derivations, downloadable materials, and exam schedules strictly customized to your university, faculty, and level.',
+  feature2Title: 'Hardcopy Camera Digitizer',
+  feature2Desc:
+    'School Admins can snap hardcopy past question sheets with their camera or upload scans. Gemini AI extracts text, question rubrics, and reconstructs diagrams.',
+  feature3Title: 'Passcode Protected Admin Roles',
+  feature3Desc:
+    'Institutional segregation ensures student accounts have zero admin panel access. Admins register using single-use university passcodes (e.g. HTU-ADM-XXXX).',
+
+  ctaBannerTitle: 'Ready to elevate your academic preparations?',
+  ctaBannerDesc: 'Join students and lecturers across Ho Technical University, KNUST, UG, and all campuses nationwide.',
+
+  // Dashboard Headings
+  studentDashboardTitle: 'Academic Revision Hub',
+  studentDashboardSubtitle: 'Verified exam questions, step-by-step marking rubrics, and schedules are synchronized.',
+  sysAdminHubTitle: 'Ghana Higher Education Registry & Administration',
+  sysAdminHubSubtitle: 'Provision universities, manage faculties, academic courses, school crests/branding, and admin registration passcodes.',
+};
+
 

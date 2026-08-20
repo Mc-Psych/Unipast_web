@@ -33,6 +33,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onCloseMobile })
     materials,
     bookmarks,
     openAiWithContext,
+    systemContentConfig,
   } = useApp();
 
   const handleNavClick = (view: string) => {
@@ -117,13 +118,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onCloseMobile })
                   {selectedUniversityId === 'all' ? 'All Institutions' : currentUniversity?.name || 'UniPast Portal'}
                 </p>
               </div>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold mt-0.5 truncate">
-                {currentUser.role === 'STUDENT'
-                  ? `Level ${currentUser.level || 200} • Student`
-                  : currentUser.role === 'SCHOOL_ADMIN'
-                  ? 'Institutional Admin'
-                  : 'System Admin Scope'}
-              </p>
+              {systemContentConfig.showSidebarScopeBadge && (
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold mt-0.5 truncate">
+                  {currentUser.role === 'STUDENT'
+                    ? `Level ${currentUser.level || 200} • Student`
+                    : currentUser.role === 'SCHOOL_ADMIN'
+                    ? `${systemContentConfig.schoolAdminScopeText || 'Institutional Admin'}`
+                    : `${systemContentConfig.sidebarScopeText || 'System Admin Scope'}`}
+                </p>
+              )}
             </div>
           </div>
 
@@ -186,26 +189,28 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onCloseMobile })
         </nav>
 
         {/* AI Quick Tutor Action */}
-        <div className="p-3.5 rounded-2xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900/50 text-slate-800 dark:text-slate-200 relative overflow-hidden shadow-xs">
-          <div className="relative z-10">
-            <div className="flex items-center gap-1.5 text-indigo-700 dark:text-indigo-300 font-bold text-xs">
-              <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 animate-pulse" />
-              <span>AI Exam Tutor</span>
+        {systemContentConfig.showSidebarAiWidget && (
+          <div className="p-3.5 rounded-2xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900/50 text-slate-800 dark:text-slate-200 relative overflow-hidden shadow-xs">
+            <div className="relative z-10">
+              <div className="flex items-center gap-1.5 text-indigo-700 dark:text-indigo-300 font-bold text-xs">
+                <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 animate-pulse" />
+                <span>{systemContentConfig.sidebarAiWidgetTitle || 'AI Exam Tutor'}</span>
+              </div>
+              <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-1 leading-snug">
+                {systemContentConfig.sidebarAiWidgetDesc || 'Instant step-by-step solutions and mathematical proofs.'}
+              </p>
+              <button
+                onClick={() => {
+                  openAiWithContext({ topic: 'General Revision' });
+                  if (onCloseMobile) onCloseMobile();
+                }}
+                className="mt-2.5 w-full py-1.5 px-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-xs transition"
+              >
+                Ask AI Tutor
+              </button>
             </div>
-            <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-1 leading-snug">
-              Instant step-by-step solutions and mathematical proofs.
-            </p>
-            <button
-              onClick={() => {
-                openAiWithContext({ topic: 'General Revision' });
-                if (onCloseMobile) onCloseMobile();
-              }}
-              className="mt-2.5 w-full py-1.5 px-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-xs transition"
-            >
-              Ask AI Tutor
-            </button>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Footer User Info */}

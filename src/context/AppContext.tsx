@@ -12,6 +12,8 @@ import {
   AdminPasscode,
   GlobalAnalyticsMetrics,
   ThemeTemplate,
+  SystemContentConfig,
+  DEFAULT_SYSTEM_CONTENT_CONFIG,
 } from '../types';
 import {
   INITIAL_UNIVERSITIES,
@@ -148,6 +150,11 @@ interface AppContextType {
   toggleThemeTemplateStatus: (id: string) => Promise<void>;
   setActiveThemeTemplate: (id: string) => void;
 
+  // System Section & Text Customization
+  systemContentConfig: SystemContentConfig;
+  updateSystemContentConfig: (updates: Partial<SystemContentConfig>) => Promise<void>;
+  resetSystemContentConfig: () => Promise<void>;
+
   // Theme & Navigation
   theme: 'light' | 'dark';
   toggleTheme: () => void;
@@ -225,6 +232,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       note: 'Need to review AVL tree rotations and Master Theorem before exam.',
     },
   ]);
+
+  // System Content & Section Configuration State
+  const [systemContentConfig, setSystemContentConfig] = useState<SystemContentConfig>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('unipast_system_content_config');
+      if (saved) {
+        try {
+          return { ...DEFAULT_SYSTEM_CONTENT_CONFIG, ...JSON.parse(saved) };
+        } catch {
+          // ignore
+        }
+      }
+    }
+    return DEFAULT_SYSTEM_CONTENT_CONFIG;
+  });
 
   const activeThemeTemplate: ThemeTemplate =
     themeTemplates.find((t) => t.id === activeThemeTemplateId && t.isEnabled) ||
@@ -322,7 +344,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Background Real-Time Data Sync with Server (Broadcasts changes to all connected users)
   const syncDataWithServer = async () => {
     try {
-      const [uniRes, courseRes, paperRes, matRes, ttRes, userRes, logRes, passRes, analyticsRes, themeRes] = await Promise.allSettled([
+      const [uniRes, courseRes, paperRes, matRes, ttRes, userRes, logRes, passRes, analyticsRes, themeRes, contentRes] = await Promise.allSettled([
         fetch('/api/universities').then((r) => r.json()),
         fetch('/api/courses').then((r) => r.json()),
         fetch('/api/papers').then((r) => r.json()),
@@ -333,6 +355,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         fetch('/api/passcodes').then((r) => r.json()),
         fetch('/api/analytics').then((r) => r.json()),
         fetch('/api/theme-templates').then((r) => r.json()),
+        fetch('/api/system/content-config').then((r) => r.json()),
       ]);
 
       if (uniRes.status === 'fulfilled' && Array.isArray(uniRes.value)) setUniversities(uniRes.value);
@@ -344,6 +367,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (logRes.status === 'fulfilled' && Array.isArray(logRes.value)) setAuditLogs(logRes.value);
       if (passRes.status === 'fulfilled' && Array.isArray(passRes.value)) setPasscodes(passRes.value);
       if (themeRes.status === 'fulfilled' && Array.isArray(themeRes.value)) setThemeTemplates(themeRes.value);
+      if (contentRes.status === 'fulfilled' && contentRes.value && typeof contentRes.value === 'object') {
+        setSystemContentConfig((prev) => ({ ...prev, ...contentRes.value }));
+        localStorage.setItem('unipast_system_content_config', JSON.stringify(contentRes.value));
+      }
       if (analyticsRes.status === 'fulfilled' && analyticsRes.value && typeof analyticsRes.value === 'object') {
         setAnalyticsMetrics((prev) => ({
           ...prev,
@@ -1635,6 +1662,48 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.setItem('unipast_active_theme_id', id);
   };
 
+  // System Content & Section Text Customization Functions
+  const updateSystemContentConfig = async (updates: Partial<SystemContentConfig>) => {
+    setSystemContentConfig((prev) => {
+      const merged = { ...prev, ...updates };
+      localStorage.setItem('unipast_system_content_config', JSON.stringify(merged));
+      return merged;
+    });
+    try {
+      await fetch('/api/system/content-config', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...updates,
+          updatedByUserId: currentUser.id,
+          updatedByName: currentUser.name,
+        }),
+      });
+      notifyLocalSync();
+    } catch {
+      // Local fallback
+    }
+  };
+
+  const resetSystemContentConfig = async () => {
+    setSystemContentConfig(DEFAULT_SYSTEM_CONTENT_CONFIG);
+    localStorage.setItem('unipast_system_content_config', JSON.stringify(DEFAULT_SYSTEM_CONTENT_CONFIG));
+    try {
+      await fetch('/api/system/content-config', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...DEFAULT_SYSTEM_CONTENT_CONFIG,
+          updatedByUserId: currentUser.id,
+          updatedByName: currentUser.name,
+        }),
+      });
+      notifyLocalSync();
+    } catch {
+      // Local fallback
+    }
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -1717,6 +1786,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         deleteThemeTemplate,
         toggleThemeTemplateStatus,
         setActiveThemeTemplate,
+        systemContentConfig,
+        updateSystemContentConfig,
+        resetSystemContentConfig,
         theme,
         toggleTheme,
         activeView,

@@ -14,7 +14,7 @@ import {
   INITIAL_PASSCODES,
   INITIAL_THEME_TEMPLATES,
 } from './src/data/mockData';
-import { PastPaper, StudyMaterial, Course, University, ExamSchedule, User, AuditLog, AdminPasscode, ThemeTemplate } from './src/types';
+import { PastPaper, StudyMaterial, Course, University, ExamSchedule, User, AuditLog, AdminPasscode, ThemeTemplate, SystemContentConfig, DEFAULT_SYSTEM_CONTENT_CONFIG } from './src/types';
 
 dotenv.config();
 
@@ -28,6 +28,7 @@ let users: User[] = [...INITIAL_USERS];
 let auditLogs: AuditLog[] = [...INITIAL_AUDIT_LOGS];
 let passcodes: AdminPasscode[] = [...INITIAL_PASSCODES];
 let themeTemplates: ThemeTemplate[] = [...INITIAL_THEME_TEMPLATES];
+let systemContentConfig: SystemContentConfig = { ...DEFAULT_SYSTEM_CONTENT_CONFIG };
 
 // Persistent dynamic analytics interaction counters
 let dynamicAnalytics = {
@@ -895,6 +896,32 @@ async function startServer() {
     themeTemplates = themeTemplates.filter((t) => t.id !== id);
     broadcastSync('themeTemplates', 'delete', { id });
     res.json({ message: 'Theme template deleted successfully' });
+  });
+
+  // ==========================================
+  // SYSTEM CONTENT & SECTION TEXTS CUSTOMIZATION
+  // ==========================================
+  app.get('/api/system/content-config', (req: Request, res: Response) => {
+    res.json(systemContentConfig);
+  });
+
+  app.put('/api/system/content-config', (req: Request, res: Response) => {
+    systemContentConfig = {
+      ...systemContentConfig,
+      ...req.body,
+    };
+
+    auditLogs.unshift({
+      id: `log-${Date.now()}`,
+      action: 'SYSTEM_CONTENT_CONFIG_UPDATED',
+      userId: req.body.updatedByUserId || 'sysadmin',
+      userName: req.body.updatedByName || 'System Administrator',
+      timestamp: new Date().toISOString().replace('T', ' ').slice(0, 19),
+      details: `Updated system branding, section copy, and visibility toggles.`,
+    });
+
+    broadcastSync('systemContentConfig', 'update', systemContentConfig);
+    res.json(systemContentConfig);
   });
 
   // ==========================================

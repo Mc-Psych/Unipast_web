@@ -50,6 +50,7 @@ export const WelcomeAuthView: React.FC = () => {
     getUserSecurityQuestion,
     universities,
     passcodes,
+    systemContentConfig,
   } = useApp();
 
   // Active universities list
@@ -88,13 +89,7 @@ export const WelcomeAuthView: React.FC = () => {
   // UI helpers
   const [copiedText, setCopiedText] = useState<string | null>(null);
   const [showAdminDetails, setShowAdminDetails] = useState(false);
-  const [isDemoSectionEnabled, setIsDemoSectionEnabled] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('unipast_enable_demo_logins');
-      return saved === 'true'; // Disabled by default for production security
-    }
-    return false;
-  });
+  const isDemoSectionEnabled = systemContentConfig?.showQuickDemoOnLogin ?? false;
 
   // Status feedback
   const [isLoading, setIsLoading] = useState(false);
@@ -267,20 +262,24 @@ export const WelcomeAuthView: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-400 flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-indigo-600/30">
-              U
+              {systemContentConfig.brandLogoChar || 'U'}
             </div>
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="font-extrabold text-xl tracking-tight text-white">
-                  Uni<span className="text-indigo-400">Past</span>
+                  {systemContentConfig.brandName || 'UniPast'}
                 </span>
-                <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-indigo-950/80 text-indigo-300 border border-indigo-800">
-                  Ghana Academic Cloud
-                </span>
+                {systemContentConfig.showCloudBadge && (
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-indigo-950/80 text-indigo-300 border border-indigo-800">
+                    {systemContentConfig.cloudBadgeText || 'Ghana Academic Cloud'}
+                  </span>
+                )}
               </div>
-              <p className="text-[11px] text-gray-400 hidden sm:block">
-                Ghanaian Universities Exam Papers, Marking Schemes & LMS
-              </p>
+              {systemContentConfig.showBrandSubtitle && systemContentConfig.brandSubtitle && (
+                <p className="text-[11px] text-gray-400 hidden sm:block">
+                  {systemContentConfig.brandSubtitle}
+                </p>
+              )}
             </div>
           </div>
 
@@ -334,16 +333,16 @@ export const WelcomeAuthView: React.FC = () => {
             <div className="text-center space-y-4 max-w-3xl mx-auto">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-950/70 border border-indigo-800/80 text-indigo-300 text-xs font-semibold">
                 <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-                <span>Ghana Higher Education Past Exam & Solution Hub</span>
+                <span>{systemContentConfig.welcomeHeroBadgeText || 'Ghana Higher Education Past Exam & Solution Hub'}</span>
               </div>
               <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
-                Master Your Exams Across <br />
+                {systemContentConfig.welcomeHeroTitle || 'Master Your Exams Across'} <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-indigo-200 to-amber-300">
-                  Every Ghanaian University
+                  {systemContentConfig.welcomeHeroTitleHighlight || 'Every Ghanaian University'}
                 </span>
               </h1>
               <p className="text-sm sm:text-base text-gray-400 max-w-2xl mx-auto leading-relaxed">
-                Seamless past questions, step-by-step marking rubrics, verified lecture notes, direct hardcopy camera scanning for digitizers, and institutional management.
+                {systemContentConfig.welcomeHeroSubtitle || 'Seamless past questions, step-by-step marking rubrics, verified lecture notes, direct hardcopy camera scanning for digitizers, and institutional management.'}
               </p>
             </div>
 
@@ -358,9 +357,9 @@ export const WelcomeAuthView: React.FC = () => {
                 <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold">
                   <GraduationCap className="w-5 h-5" />
                 </div>
-                <h4 className="font-bold text-sm text-white">Student Focused Access</h4>
+                <h4 className="font-bold text-sm text-white">{systemContentConfig.welcomeFeature1Title || 'Student Focused Access'}</h4>
                 <p className="text-xs text-gray-400 leading-relaxed">
-                  Filtered past questions, step-by-step mathematical derivations, downloadable materials, and exam schedules strictly customized to your university, faculty, and level.
+                  {systemContentConfig.welcomeFeature1Desc || 'Filtered past questions, step-by-step mathematical derivations, downloadable materials, and exam schedules strictly customized to your university, faculty, and level.'}
                 </p>
               </div>
 
@@ -368,9 +367,9 @@ export const WelcomeAuthView: React.FC = () => {
                 <div className="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold">
                   <Camera className="w-5 h-5" />
                 </div>
-                <h4 className="font-bold text-sm text-white">Hardcopy Camera Digitizer</h4>
+                <h4 className="font-bold text-sm text-white">{systemContentConfig.welcomeFeature2Title || 'Hardcopy Camera Digitizer'}</h4>
                 <p className="text-xs text-gray-400 leading-relaxed">
-                  School Admins can snap hardcopy past question sheets with their camera or upload scans. Gemini AI extracts text, question rubrics, and reconstructs diagrams.
+                  {systemContentConfig.welcomeFeature2Desc || 'School Admins can snap hardcopy past question sheets with their camera or upload scans. Gemini AI extracts text, question rubrics, and reconstructs diagrams.'}
                 </p>
               </div>
 
@@ -378,9 +377,9 @@ export const WelcomeAuthView: React.FC = () => {
                 <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold">
                   <KeyRound className="w-5 h-5" />
                 </div>
-                <h4 className="font-bold text-sm text-white">Passcode Protected Admin Roles</h4>
+                <h4 className="font-bold text-sm text-white">{systemContentConfig.welcomeFeature3Title || 'Passcode Protected Admin Roles'}</h4>
                 <p className="text-xs text-gray-400 leading-relaxed">
-                  Institutional segregation ensures student accounts have zero admin panel access. Admins register using single-use university passcodes (e.g. HTU-ADM-XXXX).
+                  {systemContentConfig.welcomeFeature3Desc || 'Institutional segregation ensures student accounts have zero admin panel access. Admins register using single-use university passcodes (e.g. HTU-ADM-XXXX).'}
                 </p>
               </div>
             </div>
@@ -389,10 +388,10 @@ export const WelcomeAuthView: React.FC = () => {
             <div className="p-6 rounded-3xl bg-gradient-to-r from-indigo-950/40 via-[#15161E] to-blue-950/40 border border-indigo-900/50 shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-5">
               <div>
                 <h3 className="text-base font-extrabold text-white flex items-center gap-2">
-                  <span>Ready to elevate your academic preparations?</span>
+                  <span>{systemContentConfig.welcomeCtaTitle || 'Ready to elevate your academic preparations?'}</span>
                 </h3>
                 <p className="text-xs text-gray-400 mt-1">
-                  Join students and lecturers across Ho Technical University, KNUST, UG, and all campuses nationwide.
+                  {systemContentConfig.welcomeCtaSubtitle || 'Join students and lecturers across Ho Technical University, KNUST, UG, and all campuses nationwide.'}
                 </p>
               </div>
 
@@ -401,7 +400,7 @@ export const WelcomeAuthView: React.FC = () => {
                   onClick={() => setAuthMode('signup')}
                   className="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xs sm:text-sm shadow-xl shadow-indigo-600/30 flex items-center gap-2 transition transform hover:-translate-y-0.5"
                 >
-                  <span>Get Started — Create Account</span>
+                  <span>{systemContentConfig.welcomeCtaButtonText || 'Get Started — Create Account'}</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
                 <button
