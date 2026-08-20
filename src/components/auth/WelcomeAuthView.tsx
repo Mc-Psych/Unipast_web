@@ -88,6 +88,13 @@ export const WelcomeAuthView: React.FC = () => {
   // UI helpers
   const [copiedText, setCopiedText] = useState<string | null>(null);
   const [showAdminDetails, setShowAdminDetails] = useState(false);
+  const [isDemoSectionEnabled, setIsDemoSectionEnabled] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('unipast_enable_demo_logins');
+      return saved === 'true'; // Disabled by default for production security
+    }
+    return false;
+  });
 
   // Status feedback
   const [isLoading, setIsLoading] = useState(false);
@@ -510,106 +517,108 @@ export const WelcomeAuthView: React.FC = () => {
               </button>
             </form>
 
-            {/* Quick Demo Credentials Panel */}
-            <div className="pt-4 border-t border-gray-800/80 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
-                  Quick Evaluation Demo Logins
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setShowAdminDetails(!showAdminDetails)}
-                  className="text-[11px] text-amber-400 hover:text-amber-300 flex items-center gap-1 font-semibold"
-                >
-                  <Info className="w-3 h-3" />
-                  <span>{showAdminDetails ? 'Hide Details' : 'View SysAdmin Courage'}</span>
-                </button>
-              </div>
-
-              {/* 1-Click Buttons */}
-              <div className="grid grid-cols-3 gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setLoginEmail('kofi.mensah@gmail.com');
-                    setLoginPassword('password123');
-                    quickDemoLogin('kofi.mensah@gmail.com');
-                  }}
-                  className="p-2 rounded-xl bg-gray-900 hover:bg-gray-800 border border-emerald-900/60 hover:border-emerald-500 text-center transition"
-                >
-                  <span className="block text-[11px] font-bold text-emerald-400">Student</span>
-                  <span className="block text-[9px] text-gray-400">Kofi Mensah</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setLoginEmail('admin.htu@gmail.com');
-                    setLoginPassword('password123');
-                    quickDemoLogin('admin.htu@gmail.com');
-                  }}
-                  className="p-2 rounded-xl bg-gray-900 hover:bg-gray-800 border border-indigo-900/60 hover:border-indigo-500 text-center transition"
-                >
-                  <span className="block text-[11px] font-bold text-indigo-400">School Admin</span>
-                  <span className="block text-[9px] text-gray-400">Dr. Kwasi</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setLoginEmail('kekesicourage@gmail.com');
-                    setLoginPassword('admin123');
-                    quickDemoLogin('kekesicourage@gmail.com');
-                  }}
-                  className="p-2 rounded-xl bg-gray-900 hover:bg-gray-800 border border-amber-900/60 hover:border-amber-500 text-center transition"
-                >
-                  <span className="block text-[11px] font-bold text-amber-400">SysAdmin</span>
-                  <span className="block text-[9px] text-gray-400">Courage K.</span>
-                </button>
-              </div>
-
-              {/* Expanded Courage Credentials Display */}
-              {showAdminDetails && (
-                <div className="p-3 rounded-xl bg-amber-950/40 border border-amber-800/70 text-xs text-amber-200 space-y-1.5 animate-in fade-in duration-200">
-                  <div className="flex items-center justify-between font-bold text-amber-300">
-                    <span>👑 System Admin Login Details</span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setLoginEmail('kekesicourage@gmail.com');
-                        setLoginPassword('admin123');
-                      }}
-                      className="px-2 py-0.5 rounded bg-amber-800/60 hover:bg-amber-700 text-[10px] text-white"
-                    >
-                      Fill Form
-                    </button>
-                  </div>
-                  <p><strong>Name:</strong> Courage Kekesi (Lead Architect)</p>
-                  <p><strong>Email:</strong> <code className="bg-black/40 px-1 py-0.5 rounded font-mono">kekesicourage@gmail.com</code> (or <code className="bg-black/40 px-1 py-0.5 rounded font-mono">sysadmin@unipast.gh</code>)</p>
-                  <p><strong>Password:</strong> <code className="bg-black/40 px-1 py-0.5 rounded font-mono">admin123</code></p>
-                  <p><strong>Security Question:</strong> <em>What is the name of your first primary school in Ghana?</em></p>
-                  <p><strong>Security Answer:</strong> <code className="bg-black/40 px-1 py-0.5 rounded font-mono">St. Paul Primary Ho</code></p>
-                  <p><strong>Master Passcode:</strong> <code className="bg-black/40 px-1 py-0.5 rounded font-mono">GH-SYSADMIN-2024</code></p>
+            {/* Quick Demo Credentials Panel (Enabled only if System Admin explicitly enables it) */}
+            {isDemoSectionEnabled && (
+              <div className="pt-4 border-t border-gray-800/80 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                    Quick Evaluation Demo Logins
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setShowAdminDetails(!showAdminDetails)}
+                    className="text-[11px] text-amber-400 hover:text-amber-300 flex items-center gap-1 font-semibold"
+                  >
+                    <Info className="w-3 h-3" />
+                    <span>{showAdminDetails ? 'Hide Details' : 'View SysAdmin Courage'}</span>
+                  </button>
                 </div>
-              )}
 
-              {/* Quick Switch to Sign Up */}
-              <div className="pt-2 text-center">
-                <p className="text-xs text-gray-400">
-                  Don't have an account yet?{' '}
+                {/* 1-Click Buttons */}
+                <div className="grid grid-cols-3 gap-2">
                   <button
                     type="button"
                     onClick={() => {
-                      setAuthMode('signup');
-                      setErrorMessage(null);
-                      setSuccessMessage(null);
+                      setLoginEmail('kofi.mensah@gmail.com');
+                      setLoginPassword('password123');
+                      quickDemoLogin('kofi.mensah@gmail.com');
                     }}
-                    className="font-bold text-indigo-400 hover:text-indigo-300 ml-1 underline"
+                    className="p-2 rounded-xl bg-gray-900 hover:bg-gray-800 border border-emerald-900/60 hover:border-emerald-500 text-center transition"
                   >
-                    Create Account
+                    <span className="block text-[11px] font-bold text-emerald-400">Student</span>
+                    <span className="block text-[9px] text-gray-400">Kofi Mensah</span>
                   </button>
-                </p>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLoginEmail('admin.htu@gmail.com');
+                      setLoginPassword('password123');
+                      quickDemoLogin('admin.htu@gmail.com');
+                    }}
+                    className="p-2 rounded-xl bg-gray-900 hover:bg-gray-800 border border-indigo-900/60 hover:border-indigo-500 text-center transition"
+                  >
+                    <span className="block text-[11px] font-bold text-indigo-400">School Admin</span>
+                    <span className="block text-[9px] text-gray-400">Dr. Kwasi</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLoginEmail('kekesicourage@gmail.com');
+                      setLoginPassword('admin123');
+                      quickDemoLogin('kekesicourage@gmail.com');
+                    }}
+                    className="p-2 rounded-xl bg-gray-900 hover:bg-gray-800 border border-amber-900/60 hover:border-amber-500 text-center transition"
+                  >
+                    <span className="block text-[11px] font-bold text-amber-400">SysAdmin</span>
+                    <span className="block text-[9px] text-gray-400">Courage K.</span>
+                  </button>
+                </div>
+
+                {/* Expanded Courage Credentials Display */}
+                {showAdminDetails && (
+                  <div className="p-3 rounded-xl bg-amber-950/40 border border-amber-800/70 text-xs text-amber-200 space-y-1.5 animate-in fade-in duration-200">
+                    <div className="flex items-center justify-between font-bold text-amber-300">
+                      <span>👑 System Admin Login Details</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setLoginEmail('kekesicourage@gmail.com');
+                          setLoginPassword('admin123');
+                        }}
+                        className="px-2 py-0.5 rounded bg-amber-800/60 hover:bg-amber-700 text-[10px] text-white"
+                      >
+                        Fill Form
+                      </button>
+                    </div>
+                    <p><strong>Name:</strong> Courage Kekesi (Lead Architect)</p>
+                    <p><strong>Email:</strong> <code className="bg-black/40 px-1 py-0.5 rounded font-mono">kekesicourage@gmail.com</code> (or <code className="bg-black/40 px-1 py-0.5 rounded font-mono">sysadmin@unipast.gh</code>)</p>
+                    <p><strong>Password:</strong> <code className="bg-black/40 px-1 py-0.5 rounded font-mono">admin123</code></p>
+                    <p><strong>Security Question:</strong> <em>What is the name of your first primary school in Ghana?</em></p>
+                    <p><strong>Security Answer:</strong> <code className="bg-black/40 px-1 py-0.5 rounded font-mono">St. Paul Primary Ho</code></p>
+                    <p><strong>Master Passcode:</strong> <code className="bg-black/40 px-1 py-0.5 rounded font-mono">GH-SYSADMIN-2024</code></p>
+                  </div>
+                )}
               </div>
+            )}
+
+            {/* Quick Switch to Sign Up */}
+            <div className="pt-4 border-t border-gray-800/80 text-center">
+              <p className="text-xs text-gray-400">
+                Don't have an account yet?{' '}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAuthMode('signup');
+                    setErrorMessage(null);
+                    setSuccessMessage(null);
+                  }}
+                  className="font-bold text-indigo-400 hover:text-indigo-300 ml-1 underline"
+                >
+                  Create Account
+                </button>
+              </p>
             </div>
           </div>
         )}

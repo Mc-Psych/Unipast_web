@@ -322,7 +322,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Background Real-Time Data Sync with Server (Broadcasts changes to all connected users)
   const syncDataWithServer = async () => {
     try {
-      const [uniRes, courseRes, paperRes, matRes, ttRes, userRes, logRes, passRes, analyticsRes] = await Promise.allSettled([
+      const [uniRes, courseRes, paperRes, matRes, ttRes, userRes, logRes, passRes, analyticsRes, themeRes] = await Promise.allSettled([
         fetch('/api/universities').then((r) => r.json()),
         fetch('/api/courses').then((r) => r.json()),
         fetch('/api/papers').then((r) => r.json()),
@@ -332,6 +332,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         fetch('/api/audit-logs').then((r) => r.json()),
         fetch('/api/passcodes').then((r) => r.json()),
         fetch('/api/analytics').then((r) => r.json()),
+        fetch('/api/theme-templates').then((r) => r.json()),
       ]);
 
       if (uniRes.status === 'fulfilled' && Array.isArray(uniRes.value)) setUniversities(uniRes.value);
@@ -342,6 +343,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (userRes.status === 'fulfilled' && Array.isArray(userRes.value)) setUsers(userRes.value);
       if (logRes.status === 'fulfilled' && Array.isArray(logRes.value)) setAuditLogs(logRes.value);
       if (passRes.status === 'fulfilled' && Array.isArray(passRes.value)) setPasscodes(passRes.value);
+      if (themeRes.status === 'fulfilled' && Array.isArray(themeRes.value)) setThemeTemplates(themeRes.value);
       if (analyticsRes.status === 'fulfilled' && analyticsRes.value && typeof analyticsRes.value === 'object') {
         setAnalyticsMetrics((prev) => ({
           ...prev,
@@ -1559,6 +1561,80 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return bookmarks.some((b) => b.targetType === targetType && b.targetId === targetId);
   };
 
+  // Theme Templates Actions
+  const addThemeTemplate = async (templateData: Omit<ThemeTemplate, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const newTemplate: ThemeTemplate = {
+      ...templateData,
+      id: `theme-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    setThemeTemplates((prev) => [...prev, newTemplate]);
+    try {
+      await fetch('/api/theme-templates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newTemplate),
+      });
+      syncDataWithServer();
+    } catch {
+      // client fallback
+    }
+  };
+
+  const updateThemeTemplate = async (id: string, updates: Partial<ThemeTemplate>) => {
+    setThemeTemplates((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, ...updates, updatedAt: new Date().toISOString() } : t))
+    );
+    try {
+      await fetch(`/api/theme-templates/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+      });
+      syncDataWithServer();
+    } catch {
+      // client fallback
+    }
+  };
+
+  const deleteThemeTemplate = async (id: string) => {
+    setThemeTemplates((prev) => prev.filter((t) => t.id !== id));
+    if (activeThemeTemplateId === id) {
+      setActiveThemeTemplateId('theme-ghana-indigo');
+    }
+    try {
+      await fetch(`/api/theme-templates/${id}`, { method: 'DELETE' });
+      syncDataWithServer();
+    } catch {
+      // client fallback
+    }
+  };
+
+  const toggleThemeTemplateStatus = async (id: string) => {
+    const target = themeTemplates.find((t) => t.id === id);
+    if (!target) return;
+    const nextEnabled = !target.isEnabled;
+    setThemeTemplates((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, isEnabled: nextEnabled, updatedAt: new Date().toISOString() } : t))
+    );
+    try {
+      await fetch(`/api/theme-templates/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isEnabled: nextEnabled }),
+      });
+      syncDataWithServer();
+    } catch {
+      // client fallback
+    }
+  };
+
+  const setActiveThemeTemplate = (id: string) => {
+    setActiveThemeTemplateId(id);
+    localStorage.setItem('unipast_active_theme_id', id);
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -1633,6 +1709,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         bookmarks,
         toggleBookmark,
         isBookmarked,
+        themeTemplates,
+        activeThemeTemplateId,
+        activeThemeTemplate,
+        addThemeTemplate,
+        updateThemeTemplate,
+        deleteThemeTemplate,
+        toggleThemeTemplateStatus,
+        setActiveThemeTemplate,
         theme,
         toggleTheme,
         activeView,
@@ -1648,6 +1732,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       {children}
     </AppContext.Provider>
   );
+
 };
 
 export const useApp = () => {

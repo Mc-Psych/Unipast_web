@@ -224,31 +224,31 @@ export const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle, isMobileMenu
         </div>
 
         {/* Right Tools */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           {/* University Tenant Display (Interactive only for System Admin) */}
-          <div className="relative">
+          <div className="relative shrink-0">
             {isSysAdmin ? (
               <button
                 onClick={() => setIsUniDropdownOpen(!isUniDropdownOpen)}
-                className="flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-semibold transition"
+                className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-semibold transition"
                 title="Select University Scope"
               >
-                <Building2 className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
-                <span className="max-w-[90px] sm:max-w-[130px] truncate">
-                  {selectedUniversityId === 'all' ? 'All Universities' : currentUniversity?.code || 'Select School'}
+                <Building2 className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />
+                <span className="max-w-[70px] xs:max-w-[90px] sm:max-w-[130px] truncate">
+                  {selectedUniversityId === 'all' ? 'All' : currentUniversity?.code || 'School'}
                 </span>
-                <ChevronDown className="w-3 h-3 text-slate-400" />
+                <ChevronDown className="w-3 h-3 text-slate-400 shrink-0" />
               </button>
             ) : (
-              <div className="flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 text-xs font-semibold">
-                <div className="w-5 h-5 flex items-center justify-center overflow-hidden shrink-0">
+              <div className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 text-xs font-semibold">
+                <div className="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center overflow-hidden shrink-0">
                   {currentUniversity?.logoUrl ? (
                     <img src={currentUniversity.logoUrl} alt={currentUniversity.name} className="w-full h-full object-contain" />
                   ) : (
-                    <span className="text-sm">{currentUniversity?.logo || '🎓'}</span>
+                    <span className="text-xs sm:text-sm">{currentUniversity?.logo || '🎓'}</span>
                   )}
                 </div>
-                <span className="max-w-[100px] truncate">{currentUniversity?.code || 'Campus'}</span>
+                <span className="max-w-[65px] sm:max-w-[100px] truncate">{currentUniversity?.code || 'Campus'}</span>
               </div>
             )}
 
@@ -310,19 +310,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle, isMobileMenu
 
           {/* Role Indicator Badge */}
           {isStudent ? (
-            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 text-xs font-semibold">
-              <GraduationCap className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+            <div className="hidden sm:flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 text-xs font-semibold shrink-0">
+              <GraduationCap className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
               <span>Student (L{currentUser.level || 200})</span>
             </div>
           ) : isSysAdmin ? (
-            <div className="relative">
+            <div className="relative shrink-0">
               <button
                 onClick={() => setIsRoleDropdownOpen(!isRoleDropdownOpen)}
-                className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border border-amber-200 dark:border-amber-900/50 bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 text-xs font-semibold hover:bg-amber-100 dark:hover:bg-amber-950/50 transition"
+                className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl border border-amber-200 dark:border-amber-900/50 bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 text-xs font-semibold hover:bg-amber-100 dark:hover:bg-amber-950/50 transition shrink-0"
               >
-                <ShieldAlert className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                <ShieldAlert className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
                 <span className="hidden sm:inline">System Admin</span>
-                <ChevronDown className="w-3 h-3 text-amber-500 dark:text-amber-400" />
+                <ChevronDown className="w-3 h-3 text-amber-500 dark:text-amber-400 shrink-0" />
               </button>
 
               {isRoleDropdownOpen && (
@@ -357,19 +357,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle, isMobileMenu
               )}
             </div>
           ) : (
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-indigo-200 dark:border-indigo-900/50 bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-300 text-xs font-semibold">
-              <UserCheck className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
-              <span className="hidden sm:inline">{currentUniversity?.code} School Admin</span>
+            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-indigo-200 dark:border-indigo-900/50 bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-300 text-xs font-semibold shrink-0">
+              <UserCheck className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />
+              <span>{currentUniversity?.code} Admin</span>
             </div>
           )}
 
           {/* AI Study Assistant */}
           <button
             onClick={() => openAiWithContext({ topic: 'General Revision' })}
-            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/20 transition active:scale-95"
+            className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/20 transition active:scale-95 shrink-0"
             title="Open Gemini AI Study Tutor"
           >
-            <Sparkles className="w-3.5 h-3.5 animate-pulse" />
+            <Sparkles className="w-3.5 h-3.5 animate-pulse shrink-0" />
             <span className="hidden md:inline">AI Tutor</span>
           </button>
 
@@ -377,7 +377,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle, isMobileMenu
           {isStudent && (
             <button
               onClick={() => setActiveView('bookmarks')}
-              className="relative p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+              className="relative p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition shrink-0"
               title="Saved Papers & Bookmarks"
             >
               <Bookmark className="w-4 h-4" />
@@ -392,20 +392,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle, isMobileMenu
           {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
-            aria-label="Toggle theme"
+            className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition shrink-0"
+            aria-label="Toggle light/dark theme"
+            title={theme === 'light' ? 'Switch to Dark Theme' : 'Switch to Light Theme'}
           >
             {theme === 'light' ? <Moon className="w-4 h-4 text-slate-700" /> : <Sun className="w-4 h-4 text-amber-400" />}
           </button>
 
-          {/* User Profile Avatar & Anchored Pop-Up Trigger */}
-          <div className="relative">
+          {/* User Profile Avatar & Anchored Pop-Up Trigger - Guaranteed Always Visible */}
+          <div className="relative shrink-0 ml-1">
             <button
               onClick={() => setIsProfileModalOpen(!isProfileModalOpen)}
-              className="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-800 text-left focus:outline-none transition group"
-              title="View & Edit Profile"
+              className="flex items-center gap-2 p-0.5 rounded-full ring-2 ring-indigo-500/40 hover:ring-indigo-600 text-left focus:outline-none transition group shrink-0"
+              title={`View & Edit Profile (${currentUser.name})`}
+              aria-label="User Profile Menu"
             >
-              <div className="relative w-8 h-8 rounded-full overflow-hidden bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-xs ring-2 ring-transparent group-hover:ring-indigo-500 transition">
+              <div className="relative w-8 h-8 rounded-full overflow-hidden bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">
                 {currentUser.avatarUrl ? (
                   <img
                     src={currentUser.avatarUrl}
@@ -418,7 +420,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle, isMobileMenu
               </div>
             </button>
 
-            {/* Anchored Pop-Up Window Directly Below Profile Icon */}
+            {/* Anchored Pop-Up Window Directly Below Profile Icon (Mobile Responsive) */}
             {isProfileModalOpen && (
               <>
                 {/* Backdrop to dismiss when clicking outside */}
@@ -427,7 +429,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle, isMobileMenu
                   onClick={() => setIsProfileModalOpen(false)}
                 />
 
-                <div className="absolute right-0 top-full mt-2.5 w-80 sm:w-96 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl z-50 p-5 text-slate-800 dark:text-slate-200 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute right-0 top-full mt-2 w-[calc(100vw-2rem)] max-w-sm sm:w-96 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl z-50 p-4 sm:p-5 text-slate-800 dark:text-slate-200 animate-in fade-in slide-in-from-top-2 duration-200">
                   {/* Top Header & Tabs */}
                   <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                     <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs">

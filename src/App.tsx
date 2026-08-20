@@ -64,7 +64,7 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen bg-[#0F0F12] text-gray-200 flex flex-col font-sans selection:bg-indigo-500 selection:text-white ${theme}`}>
+    <div className={`min-h-screen bg-slate-50 dark:bg-[#0F0F12] text-slate-900 dark:text-slate-100 flex flex-col font-sans selection:bg-indigo-500 selection:text-white transition-colors duration-200 ${theme}`}>
       {/* Top Navbar */}
       <Navbar
         isMobileMenuOpen={isMobileMenuOpen}
@@ -80,7 +80,7 @@ const AppContent: React.FC = () => {
         />
 
         {/* Dynamic View Body */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-full overflow-x-hidden bg-[#0F0F12]">
+        <main className="flex-1 p-3 sm:p-6 lg:p-8 max-w-full overflow-x-hidden bg-slate-50 dark:bg-[#0F0F12] transition-colors duration-200">
           {renderActiveView()}
         </main>
       </div>

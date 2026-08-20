@@ -27,9 +27,11 @@ import {
   Upload,
   Image as ImageIcon,
   Camera,
+  Palette,
 } from 'lucide-react';
 import { University, Faculty, Department, Programme, Course, ACADEMIC_DISCIPLINES } from '../../types';
 import { cleanCourseTitle } from '../../utils/courseUtils';
+import { ThemeTemplateEditor } from './ThemeTemplateEditor';
 
 export const SystemConfig: React.FC = () => {
   const {
@@ -76,7 +78,7 @@ export const SystemConfig: React.FC = () => {
   const selectedUni = universities.find((u) => u.id === selectedUniId) || universities[0];
 
   // Active Tab
-  const [activeTab, setActiveTab] = useState<'hierarchy' | 'courses' | 'branding' | 'passcodes' | 'institutions'>('hierarchy');
+  const [activeTab, setActiveTab] = useState<'hierarchy' | 'courses' | 'branding' | 'passcodes' | 'institutions' | 'themes'>('hierarchy');
 
   // Search filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -528,6 +530,20 @@ export const SystemConfig: React.FC = () => {
           <KeyRound className="w-4 h-4" />
           <span>Security Passcodes ({visiblePasscodes.length})</span>
         </button>
+
+        {isSysAdmin && (
+          <button
+            onClick={() => setActiveTab('themes')}
+            className={`pb-3 text-xs font-bold flex items-center gap-2 border-b-2 transition ${
+              activeTab === 'themes'
+                ? 'border-indigo-600 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400'
+                : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+            }`}
+          >
+            <Palette className="w-4 h-4" />
+            <span>Theme Templates & Customizer</span>
+          </button>
+        )}
       </div>
 
       {/* ======================================================== */}
@@ -1212,6 +1228,13 @@ export const SystemConfig: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* ======================================================== */}
+      {/* TAB 6: THEME TEMPLATES & SYSTEM CUSTOMIZER (SYS ADMIN)   */}
+      {/* ======================================================== */}
+      {activeTab === 'themes' && isSysAdmin && (
+        <ThemeTemplateEditor />
       )}
 
       {/* ======================================================== */}
